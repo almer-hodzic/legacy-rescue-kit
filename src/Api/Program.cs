@@ -1,47 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using Api.Data;
+using Api.Services.Interfaces;
+using Api.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddScoped<ITaskService, TaskService>();
+
 var app = builder.Build();
 
-var tasks = new List<TaskItem>();
-
-app.MapGet("/ping", () => "pong");
-
-app.MapGet("/tasks", () => tasks);
-
-app.MapPost("/tasks", (TaskItem task) =>
+if (app.Environment.IsDevelopment())
 {
-    task.Id = Guid.NewGuid();
-    tasks.Add(task);
-    return Results.Created($"/tasks/{task.Id}", task);
-});
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
-app.MapPut("/tasks/{id}", (Guid id, TaskItem updatedTask) =>
-{
-    var task = tasks.FirstOrDefault(t => t.Id == id);
-    if (task is null) return Results.NotFound();
-    task.Title = updatedTask.Title;
-    task.IsDone = updatedTask.IsDone;
-    task.DueDate = updatedTask.DueDate;
-    return Results.Ok(task);
-});
+app.UseRouting();
 
-app.MapDelete("/tasks/{id}", (Guid id) =>
-{
-    var task = tasks.FirstOrDefault(t => t.Id == id);
-    if (task is null) return Results.NotFound();
-    tasks.Remove(task);
-    return Results.Ok();
-});
+app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
-
-record TaskItem
-{
-    public Guid Id { get; set; }
-    public string Title { get; set; }
-    public bool IsDone { get; set; }
-    public DateTime? DueDate { get; set; }
-}
