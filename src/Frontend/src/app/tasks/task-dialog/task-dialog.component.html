@@ -1,0 +1,9 @@
+<h2 mat-dialog-title>{{ task.title }}</h2>
+<div mat-dialog-content>
+  <p><strong>Status:</strong> {{ task.isDone ? '✅ Done' : '❌ Pending' }}</p>
+  <p><strong>Due Date:</strong> {{ task.dueDate || 'No due date' }}</p>
+</div>
+<div mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Close</button>
+  <button mat-raised-button color="primary" (click)="goToEdit()">Edit</button>
+</div>
