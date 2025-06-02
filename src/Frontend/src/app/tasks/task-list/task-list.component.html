@@ -1,0 +1,30 @@
+<section class="task-list">
+  <h2>All Tasks</h2>
+
+  <mat-spinner *ngIf="loading" diameter="50"></mat-spinner>
+
+  <table *ngIf="!loading && tasks.length > 0" class="task-table">
+    <thead>
+    <tr>
+      <th>Title</th>
+      <th>Due Date</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let task of tasks">
+      <td>{{ task.title }}</td>
+      <td>{{ task.dueDate | date: 'shortDate' }}</td>
+      <td>{{ task.isDone ? '✅ Done' : '❌ Pending' }}</td>
+      <td>
+        <button mat-button color="accent" (click)="openDetailDialog(task)">View</button>
+        <button mat-button color="warn" (click)="deleteTask(task.id)">Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!loading && tasks.length === 0">No tasks found.</p>
+</section>
+
