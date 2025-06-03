@@ -7,6 +7,8 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TaskDetailDialogComponent } from '../task-dialog/task-dialog.component';
+import {TaskEditDialogComponent} from "../task-edit/task-edit-dialog.component";
+
 
 @Component({
   selector: 'app-task-list',
@@ -63,6 +65,18 @@ export class TaskListComponent implements OnInit {
       data: task
     });
   }
+
+  openEditDialog(task: TaskItem): void {
+    const ref = this.dialog.open(TaskEditDialogComponent, {
+      width: '450px',
+      data: task
+    });
+
+    ref.afterClosed().subscribe((updated) => {
+      if (updated) this.loadTasks();
+    });
+  }
+
 }
 
 
