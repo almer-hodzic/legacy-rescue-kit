@@ -1,0 +1,21 @@
+<h2>Edit Task</h2>
+
+<form [formGroup]="form" (ngSubmit)="submit()">
+    <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="form-field">
+        <mat-label>Due Date</mat-label>
+        <input matInput type="date" formControlName="dueDate" />
+    </mat-form-field>
+
+    <mat-checkbox formControlName="isDone">Done</mat-checkbox>
+
+    <div class="actions">
+        <button mat-button type="button" (click)="cancel()">Cancel</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Save</button>
+    </div>
+</form>
+
