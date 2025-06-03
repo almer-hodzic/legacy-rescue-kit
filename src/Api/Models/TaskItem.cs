@@ -6,4 +6,9 @@ public class TaskItem
     public string Title { get; set; }
     public bool IsDone { get; set; }
     public DateTime? DueDate { get; set; }
+
+    public string? UserId { get; set; } 
+    public User? User { get; set; }
+
+
 }
