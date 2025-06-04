@@ -32,5 +32,15 @@
         text-decoration: underline;
       }
     }
+
+    .navbar-nav li a {
+      padding: 8px 12px;
+      border-radius: 4px;
+    }
+
+    .navbar-nav li a:hover {
+      background-color: #495057;
+    }
+
   }
 }
