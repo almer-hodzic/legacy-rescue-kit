@@ -24,10 +24,14 @@ public class AuthService : IAuthService
 
     public async Task<bool> Register(RegisterRequest request)
     {
+        var existingUser = await _userManager.FindByEmailAsync(request.Email);
+        if (existingUser != null) return false;
+
         var user = new User { UserName = request.Username, Email = request.Email };
         var result = await _userManager.CreateAsync(user, request.Password);
         return result.Succeeded;
     }
+
 
     public async Task<string?> Login(LoginRequest request)
     {
