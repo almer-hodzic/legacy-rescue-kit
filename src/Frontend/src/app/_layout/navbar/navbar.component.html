@@ -1,11 +1,38 @@
 <nav class="navbar">
   <div class="navbar-container">
-    <a class="navbar-brand" routerLink="/">LegacyKit</a>
+    <a class="navbar-brand" routerLink="/">
+      <span class="material-icons">dashboard</span>
+      LegacyKit
+    </a>
     <ul class="navbar-nav">
-      <li><a routerLink="/tasks">Tasks</a></li>
-      <li><a routerLink="/tasks/new">+ New Task</a></li>
-      <li><a routerLink="/auth/login">Login</a></li>
-      <li><a routerLink="/auth/register">Register</a></li>
+      <li><a routerLink="/tasks"><span class="material-icons">list_alt</span>
+        Tasks
+      </a></li>
+      <li><a routerLink="/tasks/new"><span class="material-icons">add_circle</span>
+        New Task</a></li>
+      <ng-container *ngIf="!(auth.isLoggedIn$ | async); else loggedIn">
+        <li><a routerLink="/auth/login"><span class="material-icons">login</span>
+          Login</a></li>
+        <li><a routerLink="/auth/register"><span class="material-icons">person_add</span>
+          Register</a></li>
+      </ng-container>
+
+      <ng-template #loggedIn>
+        <li class="dropdown" (click)="toggleDropdown()" tabindex="0">
+          <span class="username">
+            <span class="material-icons">account_circle</span>
+            {{ username }}
+          </span>
+          <ul *ngIf="showDropdown" class="dropdown-menu">
+            <li (click)="logout()">
+              <span class="material-icons">logout</span> Logout
+            </li>
+            <li>
+              <span class="material-icons">person</span> Profile
+            </li>
+          </ul>
+        </li>
+      </ng-template>
     </ul>
   </div>
 </nav>
