@@ -46,4 +46,20 @@ export class AuthService {
   hasToken(): boolean {
     return !!localStorage.getItem(this.tokenKey);
   }
+
+  getUsername(): string | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      console.log('decoded payload:', payload);
+      return payload?.unique_name ?? null; // <-- OVO je ispravno
+    } catch {
+      return null;
+    }
+  }
+
+
+
+
 }
