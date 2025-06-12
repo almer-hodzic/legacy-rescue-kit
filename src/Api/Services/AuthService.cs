@@ -1,4 +1,5 @@
 ﻿using Api.Dtos.Requests;
+using Api.Dtos.Responses;
 using Api.Models;
 using Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
@@ -47,12 +48,19 @@ public class AuthService : IAuthService
         var key = Encoding.ASCII.GetBytes(_config["JwtSecret"]!);
         var tokenHandler = new JwtSecurityTokenHandler();
 
+        var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id),
+        new Claim(ClaimTypes.Name, user.UserName!)
+    };
+
+        // Dodaj sve role korisnika kao individualne claimove
+        var roles = _userManager.GetRolesAsync(user).Result;
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
         var tokenDescriptor = new SecurityTokenDescriptor
         {
-            Subject = new ClaimsIdentity(new[] { 
-                new Claim(ClaimTypes.NameIdentifier, user.Id),
-                new Claim(ClaimTypes.Name, user.UserName!)
-            }),
+            Subject = new ClaimsIdentity(claims),
             Expires = DateTime.UtcNow.AddHours(2),
             SigningCredentials = new SigningCredentials(
                 new SymmetricSecurityKey(key),
@@ -62,4 +70,26 @@ public class AuthService : IAuthService
         var token = tokenHandler.CreateToken(tokenDescriptor);
         return tokenHandler.WriteToken(token);
     }
+
+
+    public async Task<UserMeDto?> GetCurrentUserAsync(ClaimsPrincipal user)
+    {
+        var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId)) return null;
+
+        var foundUser = await _userManager.FindByIdAsync(userId);
+        if (foundUser == null) return null;
+
+        var roles = await _userManager.GetRolesAsync(foundUser);
+
+        return new UserMeDto
+        {
+            Id = foundUser.Id,
+            UserName = foundUser.UserName!,
+            Email = foundUser.Email!,
+            RegisteredAt = foundUser.RegisteredAt,
+            Roles = roles.ToList()
+        };
+    }
+
 }
