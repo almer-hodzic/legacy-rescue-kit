@@ -1,5 +1,6 @@
 ﻿using Api.Dtos.Requests;
 using Api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -33,5 +34,23 @@ public class AuthController : ControllerBase
         var token = await _authService.Login(request);
         return token != null ? Ok(new { Token = token }) : Unauthorized();
     }
+
+    [Authorize]
+    [HttpGet("me")]
+    public async Task<IActionResult> Me()
+    {
+        var user = await _authService.GetCurrentUserAsync(User);
+        return user != null ? Ok(user) : Unauthorized();
+    }
+
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin-stats")]
+    public IActionResult AdminOnly() =>
+       Ok("✅ Welcome, Admin. You have access to protected admin data.");
+
+    [Authorize(Roles = "User")]
+    [HttpGet("user-dashboard")]
+    public IActionResult UserOnly() =>
+        Ok("👤 Hello, User. This is your user dashboard.");
 
 }
