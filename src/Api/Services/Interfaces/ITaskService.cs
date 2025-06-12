@@ -5,10 +5,10 @@ namespace Api.Services.Interfaces;
 
 public interface ITaskService
 {
-    Task<List<TaskItem>> GetAllAsync();
-    Task<TaskItem?> GetByIdAsync(Guid id);
-    Task<TaskItem> CreateAsync(TaskCreateRequest request);
-    Task<bool> UpdateAsync(Guid id, TaskUpdateRequest request);
-    Task<bool> DeleteAsync(Guid id);
+    Task<List<TaskItem>> GetAllAsync(string userId);
+    Task<TaskItem?> GetByIdAsync(Guid id, string userId);
+    Task<TaskItem> CreateAsync(TaskCreateRequest request, string userId);
+    Task<bool> UpdateAsync(Guid id, TaskUpdateRequest request, string userId);
+    Task<bool> DeleteAsync(Guid id, string userId);
 }
 
