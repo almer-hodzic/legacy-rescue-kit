@@ -1,0 +1,27 @@
+.profile-card {
+  max-width: 600px;
+  margin: 3rem auto;
+  padding: 2.5rem;
+  background-color: #ffffff;
+  color: #333333;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+    color: #1976d2;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  p {
+    font-size: 1.1rem;
+    margin: 0.8rem 0;
+
+    strong {
+      font-weight: 600;
+      color: #555;
+    }
+  }
+}

@@ -1,0 +1,17 @@
+<mat-card *ngIf="user as u" class="user-profile-card">
+  <mat-card-header>
+    <div mat-card-avatar class="profile-avatar">
+      <mat-icon>person</mat-icon>
+    </div>
+    <mat-card-title>{{ u.username }}</mat-card-title>
+    <mat-card-subtitle>{{ u.email }}</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+    <p><strong>User ID:</strong> {{ u.id }}</p>
+    <p><strong>Roles:</strong> {{ u.roles.join(', ') }}</p>
+  </mat-card-content>
+</mat-card>
+
