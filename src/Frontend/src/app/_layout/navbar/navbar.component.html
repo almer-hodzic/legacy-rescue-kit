@@ -19,20 +19,27 @@
 
       <ng-template #loggedIn>
         <li class="dropdown" (click)="toggleDropdown()" tabindex="0">
-          <span class="username">
-            <span class="material-icons">account_circle</span>
-            {{ username }}
-          </span>
+    <span class="username">
+      <span class="material-icons">account_circle</span>
+      {{ username }}
+    </span>
           <ul *ngIf="showDropdown" class="dropdown-menu">
+            <li *ngIf="auth.getUserRole() === 'Admin'">
+              <a routerLink="/admin">
+                <span class="material-icons">admin_panel_settings</span> Admin
+              </a>
+            </li>
+
+            <li (click)="goToProfile()">
+              <span class="material-icons">person</span> Profile
+            </li>
             <li (click)="logout()">
               <span class="material-icons">logout</span> Logout
-            </li>
-            <li>
-              <span class="material-icons">person</span> Profile
             </li>
           </ul>
         </li>
       </ng-template>
+
     </ul>
   </div>
 </nav>
