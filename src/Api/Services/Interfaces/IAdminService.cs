@@ -7,5 +7,5 @@ public interface IAdminService
 {
     Task<List<UserMeDto>> GetAllUsersAsync();
     Task<bool> UpdateUserRoleAsync(string userId, string newRole);
-    Task<List<TaskItem>> GetAllTasksAsync();
+    Task<List<TaskAdminDto>> GetAllTasksAsync();
 }
