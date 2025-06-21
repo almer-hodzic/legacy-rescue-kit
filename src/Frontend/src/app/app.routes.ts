@@ -5,7 +5,9 @@ import {LoginComponent} from './_auth/auth/login/login.component';
 import {RegisterComponent} from './_auth/auth/register/register.component';
 import {UserProfileComponent} from './_profile/user-profile/user-profile.component';
 import {roleGuard} from './_auth/auth/guards/role.guard';
-import {AdminDashboardComponent} from './_admin/admin/admin-dashboard.component';
+import {AdminDashboardComponent} from './_admin/admin/components/dashboard/admin-dashboard.component';
+import {AdminUsersComponent} from './_admin/admin/components/admin-users/admin-users.component';
+import {AdminTasksComponent} from './_admin/admin/components/tasks/admin-tasks.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/tasks', pathMatch: 'full' },
@@ -14,5 +16,7 @@ export const routes: Routes = [
   { path: 'auth/login', component: LoginComponent },
   { path: 'auth/register', component: RegisterComponent },
   { path: 'profile', component: UserProfileComponent },
-  { path: 'admin', component: AdminDashboardComponent, canActivate: [roleGuard('Admin')] }
+  { path: 'admin', component: AdminDashboardComponent, canActivate: [roleGuard('Admin')] },
+  { path: 'admin/users', component: AdminUsersComponent, canActivate: [roleGuard('Admin')] },
+  { path: 'admin/tasks', component: AdminTasksComponent, canActivate: [roleGuard('Admin')] }
 ];
