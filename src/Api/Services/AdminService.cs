@@ -53,6 +53,17 @@ public class AdminService : IAdminService
         return addResult.Succeeded;
     }
 
-    public async Task<List<TaskItem>> GetAllTasksAsync()
-        => await _db.Tasks.Include(t => t.User).ToListAsync();
+    public async Task<List<TaskAdminDto>> GetAllTasksAsync()
+    {
+        var tasks = await _db.Tasks.Include(t => t.User).ToListAsync();
+
+        return tasks.Select(t => new TaskAdminDto
+        {
+            Id = t.Id,
+            Title = t.Title,
+            IsDone = t.IsDone,
+            DueDate = t.DueDate,
+            UserEmail = t.User?.Email
+        }).ToList();
+    }
 }
