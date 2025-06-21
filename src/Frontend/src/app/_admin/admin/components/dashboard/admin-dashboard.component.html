@@ -2,25 +2,27 @@
   <h2><span class="material-icons">admin_panel_settings</span> Admin Dashboard</h2>
 
   <div class="stats-cards">
-    <div class="card">
+    <a class="card" [routerLink]="['/admin/users']">
       <span class="material-icons">groups</span>
       <div class="info">
         <h3>Users</h3>
         <p>Manage user accounts and roles.</p>
       </div>
-    </div>
-    <div class="card">
+    </a>
+
+    <a class="card" [routerLink]="['/admin/tasks']">
       <span class="material-icons">assignment</span>
       <div class="info">
         <h3>Tasks</h3>
         <p>Oversee task assignments and activity.</p>
       </div>
-    </div>
-    <div class="card">
+    </a>
+
+    <div class="card disabled">
       <span class="material-icons">settings</span>
       <div class="info">
         <h3>Settings</h3>
-        <p>Configure app-level admin options.</p>
+        <p>Coming soon...</p>
       </div>
     </div>
   </div>
