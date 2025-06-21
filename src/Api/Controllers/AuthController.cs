@@ -3,6 +3,7 @@ using Api.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Api.Controllers;
 
@@ -52,5 +53,27 @@ public class AuthController : ControllerBase
     [HttpGet("user-dashboard")]
     public IActionResult UserOnly() =>
         Ok("👤 Hello, User. This is your user dashboard.");
+
+    [Authorize]
+    [HttpPut("profile")]
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _authService.UpdateProfileAsync(userId, request);
+        return result ? Ok(new { message = "Profile updated" }) : BadRequest(new { message = "Update failed" });
+    }
+
+    [Authorize]
+    [HttpPut("change-password")]
+    public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        var result = await _authService.ChangePasswordAsync(userId, request);
+        return result ? Ok(new { message = "Password changed" }) : BadRequest(new { message = "Password change failed" });
+    }
 
 }
