@@ -54,7 +54,7 @@ public class AuthService : IAuthService
         new Claim(ClaimTypes.Name, user.UserName!)
     };
 
-        // Dodaj sve role korisnika kao individualne claimove
+        
         var roles = _userManager.GetRolesAsync(user).Result;
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
 
@@ -91,5 +91,26 @@ public class AuthService : IAuthService
             Roles = roles.ToList()
         };
     }
+    public async Task<bool> UpdateProfileAsync(string userId, UpdateProfileRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null) return false;
 
+        user.Email = request.Email;
+        user.UserName = request.Username;
+        user.NormalizedEmail = request.Email.ToUpperInvariant();
+        user.NormalizedUserName = request.Username.ToUpperInvariant();
+
+        var result = await _userManager.UpdateAsync(user);
+        return result.Succeeded;
+    }
+
+    public async Task<bool> ChangePasswordAsync(string userId, ChangePasswordRequest request)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user == null) return false;
+
+        var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+        return result.Succeeded;
+    }
 }
