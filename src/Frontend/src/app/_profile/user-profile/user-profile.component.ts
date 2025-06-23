@@ -39,7 +39,7 @@ export class UserProfileComponent implements OnInit {
   constructor(private http: HttpClient, private fb: FormBuilder, private snackbar: MatSnackBar, private auth: AuthService) {}
 
   ngOnInit(): void {
-    this.http.get<UserMeDto>('https://localhost:44348/api/auth/me').subscribe({
+    this.auth.getCurrentUser().subscribe({
       next: (user) => {
         this.user = user;
         this.profileForm = this.fb.group({

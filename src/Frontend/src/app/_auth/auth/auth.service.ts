@@ -23,6 +23,16 @@ export interface ChangePasswordRequest {
   newPassword: string;
 }
 
+
+export interface UserMeDto {
+  id: string;
+  email: string;
+  userName: string;
+  roles: string[];
+}
+
+
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private baseUrl = 'https://localhost:44348/api/auth';
@@ -80,6 +90,12 @@ export class AuthService {
       return null;
     }
   }
+
+
+  getCurrentUser(): Observable<UserMeDto> {
+    return this.http.get<UserMeDto>(`${this.baseUrl}/me`);
+  }
+
 
   updateProfile(data: UpdateProfileRequest): Observable<any> {
     return this.http.put(`${this.baseUrl}/profile`, data);
