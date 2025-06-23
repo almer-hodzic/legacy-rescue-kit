@@ -1,17 +1,37 @@
-<mat-card *ngIf="user as u" class="user-profile-card">
+<mat-card *ngIf="user" class="profile-card">
   <mat-card-header>
     <div mat-card-avatar class="profile-avatar">
       <mat-icon>person</mat-icon>
     </div>
-    <mat-card-title>{{ u.username }}</mat-card-title>
-    <mat-card-subtitle>{{ u.email }}</mat-card-subtitle>
+    <mat-card-title>{{ user.userName }}</mat-card-title>
+    <mat-card-subtitle>{{ user.email }}</mat-card-subtitle>
   </mat-card-header>
 
   <mat-divider></mat-divider>
 
   <mat-card-content>
-    <p><strong>User ID:</strong> {{ u.id }}</p>
-    <p><strong>Roles:</strong> {{ u.roles.join(', ') }}</p>
+    <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+      <h3>Update Profile</h3>
+      <label>Email</label>
+      <input matInput formControlName="email" type="email" />
+
+      <label>Username</label>
+      <input matInput formControlName="userName" type="text" />
+
+      <button mat-raised-button color="primary" type="submit">Save Changes</button>
+    </form>
+
+    <mat-divider style="margin: 1.5rem 0;"></mat-divider>
+
+    <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+      <h3>Change Password</h3>
+      <label>Current Password</label>
+      <input matInput formControlName="currentPassword" type="password" />
+
+      <label>New Password</label>
+      <input matInput formControlName="newPassword" type="password" />
+
+      <button mat-raised-button color="accent" type="submit">Change Password</button>
+    </form>
   </mat-card-content>
 </mat-card>
-
