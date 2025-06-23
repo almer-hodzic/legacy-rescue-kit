@@ -13,6 +13,16 @@ export interface LoginRequest {
   password: string;
 }
 
+export interface UpdateProfileRequest {
+  email: string;
+  username: string;
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private baseUrl = 'https://localhost:44348/api/auth';
@@ -53,7 +63,7 @@ export class AuthService {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
       console.log('decoded payload:', payload);
-      return payload?.unique_name ?? null; // <-- OVO je ispravno
+      return payload?.unique_name ?? null;
     } catch {
       return null;
     }
@@ -69,6 +79,14 @@ export class AuthService {
     } catch {
       return null;
     }
+  }
+
+  updateProfile(data: UpdateProfileRequest): Observable<any> {
+    return this.http.put(`${this.baseUrl}/profile`, data);
+  }
+
+  changePassword(data: ChangePasswordRequest): Observable<any> {
+    return this.http.put(`${this.baseUrl}/change-password`, data);
   }
 
 }
