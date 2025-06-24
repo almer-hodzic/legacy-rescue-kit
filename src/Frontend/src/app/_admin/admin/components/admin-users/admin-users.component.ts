@@ -33,6 +33,9 @@ export class AdminUsersComponent implements OnInit {
   loadUsers(): void {
     this.adminService.getAllUsers().subscribe({
       next: (users) => (this.users = users),
+      error: () => {
+        this.snackbar.open('Failed to fetch users ❌', 'Dismiss', { duration: 3000 });
+      }
     });
   }
 
