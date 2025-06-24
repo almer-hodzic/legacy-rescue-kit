@@ -62,3 +62,14 @@
     }
   }
 }
+
+@media (max-width: 600px) {
+  .profile-card, .admin-dashboard {
+    padding: 1rem;
+    .stats-cards {
+      flex-direction: column;
+      gap: 1rem;
+    }
+  }
+}
+

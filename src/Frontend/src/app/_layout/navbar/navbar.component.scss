@@ -90,3 +90,17 @@
     }
   }
 }
+
+@media (max-width: 600px) {
+  .navbar-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .navbar-nav {
+    flex-direction: column;
+    width: 100%;
+    li { width: 100%; }
+  }
+  .username { margin-left: 0; }
+}
+

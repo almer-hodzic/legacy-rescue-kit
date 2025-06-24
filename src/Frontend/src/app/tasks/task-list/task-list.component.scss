@@ -27,3 +27,14 @@
     }
   }
 }
+
+@media (max-width: 600px) {
+  .task-table {
+    display: block;
+    overflow-x: auto;
+  }
+  .task-table th, .task-table td {
+    white-space: nowrap;
+  }
+}
+
