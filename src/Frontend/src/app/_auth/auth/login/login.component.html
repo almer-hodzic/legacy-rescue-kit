@@ -5,13 +5,39 @@
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Email</mat-label>
       <input matInput type="email" formControlName="email" required />
+      <mat-error *ngIf="email?.touched && email?.hasError('required')">Email is required</mat-error>
+      <mat-error *ngIf="email?.touched && email?.hasError('email')">Invalid email address</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Password</mat-label>
-      <input matInput type="password" formControlName="password" required />
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        formControlName="password"
+        required
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        (click)="hidePassword = !hidePassword"
+        type="button"
+        aria-label="Toggle password visibility">
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
+      <mat-error *ngIf="password?.touched && password?.hasError('required')">
+        Password is required
+      </mat-error>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">Login</button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="form.invalid || isLoading">
+      <span *ngIf="!isLoading">Login</span>
+      <span *ngIf="isLoading">Logging in...</span>
+    </button>
   </form>
 </section>
