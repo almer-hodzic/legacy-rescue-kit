@@ -4,7 +4,8 @@
   <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
     <mat-form-field appearance="outline" class="form-field">
       <mat-label>Title</mat-label>
-      <input matInput formControlName="title" placeholder="Task title" />
+      <input matInput formControlName="title" placeholder="Task title" required />
+      <mat-error *ngIf="title?.touched && title?.hasError('required')">Title is required</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="form-field">
@@ -12,11 +13,14 @@
       <input matInput [matDatepicker]="picker" formControlName="dueDate" />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="form.get('dueDate')?.touched && form.get('dueDate')?.hasError('pastDate')">
+        Date cannot be in the past
+      </mat-error>
     </mat-form-field>
 
     <mat-checkbox *ngIf="isEdit" formControlName="isDone">Mark as done</mat-checkbox>
 
-    <button mat-raised-button color="primary" [disabled]="form.invalid">
+    <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
       {{ isEdit ? 'Update' : 'Create' }}
     </button>
   </form>
