@@ -1,9 +1,15 @@
-﻿namespace Api.Dtos;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class TaskUpdateRequest
+namespace Api.Dtos
 {
-    public string Title { get; set; } = null!;
-    public bool IsDone { get; set; }
-    public DateTime? DueDate { get; set; }
+    public class TaskUpdateRequest
+    {
+        [Required]
+        public string Title { get; set; } = null!;
+
+        public bool IsDone { get; set; }
+
+        public DateTime? DueDate { get; set; }
+    }
 }
 

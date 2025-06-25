@@ -1,7 +1,12 @@
-﻿namespace Api.Dtos;
+﻿using System.ComponentModel.DataAnnotations;
 
-public class TaskCreateRequest
+namespace Api.Dtos
 {
-    public string Title { get; set; } = null!;
-    public DateTime? DueDate { get; set; }
+    public class TaskCreateRequest
+    {
+        [Required]
+        public string Title { get; set; } = null!;
+
+        public DateTime? DueDate { get; set; }
+    }
 }
