@@ -46,6 +46,9 @@ public class TaskController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(TaskCreateRequest request)
     {
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var userId = GetUserId();
         var task = await _service.CreateAsync(request, userId);
         return CreatedAtAction(nameof(GetById), new { id = task.Id }, task);
@@ -54,6 +57,10 @@ public class TaskController : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, TaskUpdateRequest request)
     {
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
+
         var userId = GetUserId();
         var result = await _service.UpdateAsync(id, request, userId);
         return result ? NoContent() : NotFound();
