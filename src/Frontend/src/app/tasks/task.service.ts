@@ -24,7 +24,7 @@ export interface TaskUpdateRequest {
   providedIn: 'root'
 })
 export class TaskService {
-  // Update URL prema tvojoj konfiguraciji backend servera
+
   private apiUrl = 'https://localhost:44348/api/Task';
 
   constructor(private http: HttpClient) {}
@@ -48,4 +48,20 @@ export class TaskService {
   deleteTask(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  getTasks(query: { page: number; pageSize: number; status?: string; sortBy?: string }) {
+    const params = {
+      page: query.page,
+      pageSize: query.pageSize,
+      ...(query.status ? { status: query.status } : {}),
+      ...(query.sortBy ? { sortBy: query.sortBy } : {})
+    };
+
+    return this.http.get<TaskItem[]>(this.apiUrl, {
+      params,
+      observe: 'response'
+    });
+  }
+
+
 }
