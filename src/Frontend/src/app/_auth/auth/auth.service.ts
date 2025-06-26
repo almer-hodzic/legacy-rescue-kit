@@ -46,18 +46,29 @@ export class AuthService {
   }
 
   login(data: LoginRequest): Observable<any> {
-    return this.http.post<{ token: string }>(`${this.baseUrl}/login`, data).pipe(
+    return this.http.post<{ accessToken: string; refreshToken: string }>(`${this.baseUrl}/login`, data).pipe(
       tap((res) => {
-        localStorage.setItem(this.tokenKey, res.token);
+        localStorage.setItem(this.tokenKey, res.accessToken);
         this.isLoggedIn$.next(true);
       })
     );
   }
 
+
   logout(): void {
-    localStorage.removeItem(this.tokenKey);
-    this.isLoggedIn$.next(false);
+    this.http.post(`${this.baseUrl}/logout`, {}, { withCredentials: true }).subscribe({
+      complete: () => {
+        localStorage.removeItem(this.tokenKey);
+        this.isLoggedIn$.next(false);
+      },
+      error: () => {
+        // fallback ako backend ne radi — i dalje logoutaj
+        localStorage.removeItem(this.tokenKey);
+        this.isLoggedIn$.next(false);
+      }
+    });
   }
+
 
   getToken(): string | null {
     return localStorage.getItem(this.tokenKey);
@@ -103,6 +114,14 @@ export class AuthService {
 
   changePassword(data: ChangePasswordRequest): Observable<any> {
     return this.http.put(`${this.baseUrl}/change-password`, data);
+  }
+
+  refreshToken(): Observable<{ accessToken: string }> {
+    return this.http.post<{ accessToken: string }>(`${this.baseUrl}/refresh`, {}, { withCredentials: true }).pipe(
+      tap((res) => {
+        localStorage.setItem(this.tokenKey, res.accessToken);
+      })
+    );
   }
 
 }
