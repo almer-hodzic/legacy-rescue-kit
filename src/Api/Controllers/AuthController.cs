@@ -38,9 +38,23 @@ public class AuthController : ControllerBase
         if (!ModelState.IsValid)
             return BadRequest(ModelState);
 
-        var token = await _authService.Login(request);
-        return token != null ? Ok(new { Token = token }) : Unauthorized();
+        var tokenResponse = await _authService.Login(request);
+        if (tokenResponse == null)
+            return Unauthorized();
+
+        Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTimeOffset.UtcNow.AddDays(7),
+            SameSite = SameSiteMode.Strict,
+            Secure = true
+        });
+
+        return Ok(tokenResponse);
     }
+
+
+
 
     [Authorize]
     [HttpGet("me")]
@@ -88,4 +102,23 @@ public class AuthController : ControllerBase
         return result ? Ok(new { message = "Password changed" }) : BadRequest(new { message = "Password change failed" });
     }
 
+    [HttpPost("refresh")]
+    public async Task<IActionResult> Refresh()
+    {
+        var refreshToken = Request.Cookies["refreshToken"];
+        var tokenResponse = await _authService.RefreshTokenAsync(refreshToken);
+
+        if (tokenResponse == null)
+            return Unauthorized(new { message = "Invalid or expired refresh token." });
+
+        Response.Cookies.Append("refreshToken", tokenResponse.RefreshToken, new CookieOptions
+        {
+            HttpOnly = true,
+            Expires = DateTimeOffset.UtcNow.AddDays(7),
+            SameSite = SameSiteMode.Strict,
+            Secure = true
+        });
+
+        return Ok(tokenResponse);
+    }
 }
