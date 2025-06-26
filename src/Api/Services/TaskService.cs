@@ -61,31 +61,29 @@ public class TaskService : ITaskService
         return true;
     }
 
-    public async Task<List<TaskItem>> GetFilteredAsync(string userId, TaskQueryParams query)
+    public async Task<(List<TaskItem> Tasks, int TotalCount)> GetFilteredWithCountAsync(string userId, TaskQueryParams query)
     {
-        var q = _db.Tasks.AsQueryable();
+        var q = _db.Tasks.AsQueryable().Where(t => t.UserId == userId);
 
-        q = q.Where(t => t.UserId == userId);
+        if (query.Status == "done") q = q.Where(t => t.IsDone);
+        else if (query.Status == "pending") q = q.Where(t => !t.IsDone);
 
-        // Filter
-        if (query.Status == "done")
-            q = q.Where(t => t.IsDone);
-        else if (query.Status == "pending")
-            q = q.Where(t => !t.IsDone);
+        var total = await q.CountAsync();
 
-        // Sort
         q = query.SortBy switch
         {
             "title" => q.OrderBy(t => t.Title),
             "dueDate" => q.OrderBy(t => t.DueDate),
             "isDone" => q.OrderBy(t => t.IsDone),
-            _ => q.OrderByDescending(t => t.DueDate) // default
+            _ => q.OrderByDescending(t => t.DueDate)
         };
 
-        // Pagination
         var skip = (query.Page - 1) * query.PageSize;
-        return await q.Skip(skip).Take(query.PageSize).ToListAsync();
+        var tasks = await q.Skip(skip).Take(query.PageSize).ToListAsync();
+
+        return (tasks, total);
     }
+
 
 }
 

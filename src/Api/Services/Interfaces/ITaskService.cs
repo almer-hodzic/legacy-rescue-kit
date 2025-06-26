@@ -11,7 +11,8 @@ public interface ITaskService
     Task<TaskItem> CreateAsync(TaskCreateRequest request, string userId);
     Task<bool> UpdateAsync(Guid id, TaskUpdateRequest request, string userId);
     Task<bool> DeleteAsync(Guid id, string userId);
-    Task<List<TaskItem>> GetFilteredAsync(string userId, TaskQueryParams query);
+    Task<(List<TaskItem> Tasks, int TotalCount)> GetFilteredWithCountAsync(string userId, TaskQueryParams query);
+
 
 }
 
