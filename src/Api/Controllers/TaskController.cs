@@ -32,9 +32,11 @@ public class TaskController : ControllerBase
     public async Task<IActionResult> GetAll([FromQuery] TaskQueryParams query)
     {
         var userId = GetUserId();
-        var tasks = await _service.GetFilteredAsync(userId, query);
+        var (tasks, total) = await _service.GetFilteredWithCountAsync(userId, query);
+        Response.Headers.Add("X-Total-Count", total.ToString());
         return Ok(tasks);
     }
+
 
 
     [HttpGet("{id}")]
