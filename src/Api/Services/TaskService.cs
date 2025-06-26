@@ -3,6 +3,7 @@ using Api.Models;
 using Api.Dtos;
 using Api.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Api.Dtos.Requests;
 
 namespace Api.Services;
 
@@ -59,6 +60,33 @@ public class TaskService : ITaskService
         await _db.SaveChangesAsync();
         return true;
     }
+
+    public async Task<List<TaskItem>> GetFilteredAsync(string userId, TaskQueryParams query)
+    {
+        var q = _db.Tasks.AsQueryable();
+
+        q = q.Where(t => t.UserId == userId);
+
+        // Filter
+        if (query.Status == "done")
+            q = q.Where(t => t.IsDone);
+        else if (query.Status == "pending")
+            q = q.Where(t => !t.IsDone);
+
+        // Sort
+        q = query.SortBy switch
+        {
+            "title" => q.OrderBy(t => t.Title),
+            "dueDate" => q.OrderBy(t => t.DueDate),
+            "isDone" => q.OrderBy(t => t.IsDone),
+            _ => q.OrderByDescending(t => t.DueDate) // default
+        };
+
+        // Pagination
+        var skip = (query.Page - 1) * query.PageSize;
+        return await q.Skip(skip).Take(query.PageSize).ToListAsync();
+    }
+
 }
 
 

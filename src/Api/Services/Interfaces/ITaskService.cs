@@ -1,5 +1,6 @@
 ﻿using Api.Models;
 using Api.Dtos;
+using Api.Dtos.Requests;
 
 namespace Api.Services.Interfaces;
 
@@ -10,5 +11,7 @@ public interface ITaskService
     Task<TaskItem> CreateAsync(TaskCreateRequest request, string userId);
     Task<bool> UpdateAsync(Guid id, TaskUpdateRequest request, string userId);
     Task<bool> DeleteAsync(Guid id, string userId);
+    Task<List<TaskItem>> GetFilteredAsync(string userId, TaskQueryParams query);
+
 }
 
