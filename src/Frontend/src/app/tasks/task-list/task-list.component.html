@@ -1,5 +1,11 @@
 <section class="task-list">
-  <h2>All Tasks</h2>
+  <h2>Tasks</h2>
+
+  <mat-tab-group (selectedIndexChange)="onTabChange($event)">
+    <mat-tab label="All"></mat-tab>
+    <mat-tab label="Completed"></mat-tab>
+    <mat-tab label="Pending"></mat-tab>
+  </mat-tab-group>
 
   <mat-spinner *ngIf="loading" diameter="50"></mat-spinner>
 
@@ -19,13 +25,21 @@
       <td>{{ task.isDone ? '✅ Done' : '❌ Pending' }}</td>
       <td>
         <button mat-button color="accent" (click)="openDetailDialog(task)">View</button>
-          <button mat-button color="primary" (click)="openEditDialog(task)">Edit</button>
-          <button mat-button color="warn" (click)="deleteTask(task.id)">Delete</button>
+        <button mat-button color="primary" (click)="openEditDialog(task)">Edit</button>
+        <button mat-button color="warn" (click)="deleteTask(task.id)">Delete</button>
       </td>
     </tr>
     </tbody>
   </table>
 
+  <mat-paginator
+    [length]="totalCount"
+    [pageSize]="pageSize"
+    [pageIndex]="page - 1"
+    [pageSizeOptions]="[5, 10, 20]"
+    (page)="onPageChange($event)">
+  </mat-paginator>
+
+
   <p *ngIf="!loading && tasks.length === 0">No tasks found.</p>
 </section>
-
