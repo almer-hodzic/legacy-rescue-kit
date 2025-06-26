@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskService } from '../task.service';
 import { TaskItem } from '../../_models/models/task.model';
@@ -8,7 +8,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TaskDetailDialogComponent } from '../task-dialog/task-dialog.component';
 import {TaskEditDialogComponent} from "../task-edit/task-edit-dialog.component";
-
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatTabsModule } from '@angular/material/tabs';
 
 @Component({
   selector: 'app-task-list',
@@ -19,7 +20,9 @@ import {TaskEditDialogComponent} from "../task-edit/task-edit-dialog.component";
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatDialogModule,
-    TaskDetailDialogComponent
+    TaskDetailDialogComponent,
+    MatPaginatorModule,
+    MatTabsModule
   ],
   templateUrl: './task-list.component.html',
   styleUrls: ['./task-list.component.scss']
@@ -27,6 +30,14 @@ import {TaskEditDialogComponent} from "../task-edit/task-edit-dialog.component";
 export class TaskListComponent implements OnInit {
   tasks: TaskItem[] = [];
   loading = false;
+
+  page = 1;
+  pageSize = 5;
+  totalCount = 0;
+  statusFilter: 'all' | 'done' | 'pending' = 'all';
+
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   constructor(
     private taskService: TaskService,
@@ -40,11 +51,36 @@ export class TaskListComponent implements OnInit {
 
   loadTasks(): void {
     this.loading = true;
-    this.taskService.getAllTasks().subscribe({
-      next: (tasks: TaskItem[]) => (this.tasks = tasks),
-      error: (err: any) => this.snackbar.open('Failed to load tasks', 'Dismiss', { duration: 3000 }),
+
+    const query = {
+      page: this.page,
+      pageSize: this.pageSize,
+      status: this.statusFilter !== 'all' ? this.statusFilter : undefined,
+      sortBy: 'dueDate'
+    };
+
+    this.taskService.getTasks(query).subscribe({
+      next: (res) => {
+        this.tasks = res.body ?? [];
+        const header = res.headers.get('X-Total-Count');
+        this.totalCount = header ? parseInt(header, 10) : 0;
+      },
+      error: () => this.snackbar.open('Failed to load tasks', 'Dismiss', { duration: 3000 }),
       complete: () => (this.loading = false)
     });
+  }
+
+
+  onPageChange(event: PageEvent): void {
+    this.page = event.pageIndex + 1;
+    this.pageSize = event.pageSize;
+    this.loadTasks();
+  }
+
+  onTabChange(index: number): void {
+    this.statusFilter = index === 1 ? 'done' : index === 2 ? 'pending' : 'all';
+    this.page = 1;
+    this.loadTasks();
   }
 
   deleteTask(id: string): void {
