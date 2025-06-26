@@ -157,4 +157,16 @@ public class AuthService : IAuthService
         return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
     }
 
+    public async Task LogoutAsync(string userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user != null)
+        {
+            user.RefreshToken = null;
+            user.RefreshTokenExpiresAt = null;
+            await _userManager.UpdateAsync(user);
+        }
+    }
+
+
 }

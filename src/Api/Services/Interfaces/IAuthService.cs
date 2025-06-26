@@ -12,6 +12,8 @@ namespace Api.Services.Interfaces
         Task<bool> UpdateProfileAsync(string userId, UpdateProfileRequest request);
         Task<bool> ChangePasswordAsync(string userId, ChangePasswordRequest request);
         Task<TokenResponse?> RefreshTokenAsync(string? refreshToken);
+        Task LogoutAsync(string userId);
+
     }
 
 
