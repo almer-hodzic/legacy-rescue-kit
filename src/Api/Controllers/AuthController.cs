@@ -121,4 +121,20 @@ public class AuthController : ControllerBase
 
         return Ok(tokenResponse);
     }
+
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId)) return Unauthorized();
+
+        await _authService.LogoutAsync(userId);
+
+        // Clear cookie (optional)
+        Response.Cookies.Delete("refreshToken");
+
+        return NoContent();
+    }
+
 }
