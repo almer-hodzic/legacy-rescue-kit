@@ -3,6 +3,7 @@ using Api.Dtos.Responses;
 using Api.Models;
 using Api.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -34,14 +35,51 @@ public class AuthService : IAuthService
     }
 
 
-    public async Task<string?> Login(LoginRequest request)
+    public async Task<TokenResponse?> Login(LoginRequest request)
     {
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null) return null;
 
         var result = await _signInManager.CheckPasswordSignInAsync(user, request.Password, false);
-        return result.Succeeded ? GenerateJwtToken(user) : null;
+        if (!result.Succeeded) return null;
+
+        var accessToken = GenerateJwtToken(user);
+        var refreshToken = GenerateRefreshToken();
+
+        user.RefreshToken = refreshToken;
+        user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7);
+        await _userManager.UpdateAsync(user);
+
+        return new TokenResponse
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
     }
+
+    public async Task<TokenResponse?> RefreshTokenAsync(string? refreshToken)
+    {
+        if (string.IsNullOrEmpty(refreshToken)) return null;
+
+        var user = await _userManager.Users.FirstOrDefaultAsync(u =>
+            u.RefreshToken == refreshToken && u.RefreshTokenExpiresAt > DateTime.UtcNow);
+
+        if (user == null) return null;
+
+        var newAccessToken = GenerateJwtToken(user);
+        var newRefreshToken = GenerateRefreshToken();
+
+        user.RefreshToken = newRefreshToken;
+        user.RefreshTokenExpiresAt = DateTime.UtcNow.AddDays(7);
+        await _userManager.UpdateAsync(user);
+
+        return new TokenResponse
+        {
+            AccessToken = newAccessToken,
+            RefreshToken = newRefreshToken
+        };
+    }
+
 
     private string GenerateJwtToken(User user)
     {
@@ -113,4 +151,10 @@ public class AuthService : IAuthService
         var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
         return result.Succeeded;
     }
+
+    private string GenerateRefreshToken()
+    {
+        return Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+    }
+
 }
