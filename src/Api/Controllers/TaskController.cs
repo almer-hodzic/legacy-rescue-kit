@@ -3,6 +3,7 @@ using Api.Services.Interfaces;
 using Api.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Api.Dtos.Requests;
 
 
 namespace Api.Controllers;
@@ -28,12 +29,13 @@ public class TaskController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] TaskQueryParams query)
     {
         var userId = GetUserId();
-        var tasks = await _service.GetAllAsync(userId);
+        var tasks = await _service.GetFilteredAsync(userId, query);
         return Ok(tasks);
     }
+
 
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(Guid id)
