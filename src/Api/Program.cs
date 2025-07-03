@@ -1,4 +1,4 @@
-using Api.Data;
+﻿using Api.Data;
 using Api.Services.Interfaces;
 using Api.Services;
 using Microsoft.EntityFrameworkCore;
@@ -144,11 +144,8 @@ static async Task SeedRolesAndAdminAsync(IServiceProvider services)
 }
 
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseRouting();
 
@@ -158,6 +155,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapGet("/", () => Results.Ok("✅ Legacy Rescue Kit API is live!"));
 
 app.Run();
 await SeedRolesAndAdminAsync(app.Services);
