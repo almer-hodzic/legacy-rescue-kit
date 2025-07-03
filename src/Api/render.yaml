@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: legacy-rescue-kit-api
+    runtime: docker
+    plan: free
+    branch: main
+    rootDir: Api
+    dockerfilePath: Api/Dockerfile
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: JwtSecret
+        value: ThisIsAnExtremelySecureJWTSecretKeyOfAtLeast64CharsLong_1234567890!@#$%^&*()
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: legacy-rescue-db
+          property: connectionString
+
+databases:
+  - name: legacy-rescue-db
+    databaseName: LegacyRescueKitDB
+    user: legacy_user
