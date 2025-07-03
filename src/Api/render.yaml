@@ -4,8 +4,8 @@ services:
     runtime: docker
     plan: free
     branch: main
-    rootDir: Api
-    dockerfilePath: Api/Dockerfile
+    rootDir: src/Api
+    dockerfilePath: Dockerfile
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
