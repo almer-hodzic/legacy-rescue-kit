@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from '../../../environments/environment.prod';
 
 export interface UserAdminDto {
   id: string;
@@ -20,7 +21,7 @@ export interface TaskAdminDto {
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  private baseUrl = 'https://localhost:44348/api/admin';
+  private baseUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 

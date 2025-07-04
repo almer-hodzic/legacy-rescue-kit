@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, BehaviorSubject, tap } from 'rxjs';
+import {environment} from '../../../environments/environment.prod';
 
 export interface RegisterRequest {
   username: string;
@@ -35,7 +36,7 @@ export interface UserMeDto {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = 'https://localhost:44348/api/auth';
+  private baseUrl = environment.apiBaseUrl;
   private tokenKey = 'jwt_token';
   isLoggedIn$ = new BehaviorSubject<boolean>(this.hasToken());
 

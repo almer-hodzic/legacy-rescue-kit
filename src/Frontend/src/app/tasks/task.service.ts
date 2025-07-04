@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {environment} from '../../environments/environment.prod';
 
 export interface TaskItem {
   id: string;
@@ -23,9 +24,12 @@ export interface TaskUpdateRequest {
 @Injectable({
   providedIn: 'root'
 })
+
+
+
 export class TaskService {
 
-  private apiUrl = 'https://localhost:44348/api/Task';
+  private apiUrl = environment.apiBaseUrl;
 
   constructor(private http: HttpClient) {}
 
