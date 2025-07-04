@@ -18,5 +18,5 @@ services:
 
 databases:
   - name: legacy-rescue-db
-    databaseName: LegacyRescueKitDB
+    databaseName: legacy_rescue_kit
     user: legacy_user
