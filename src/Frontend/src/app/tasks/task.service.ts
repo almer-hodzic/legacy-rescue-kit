@@ -29,7 +29,7 @@ export interface TaskUpdateRequest {
 
 export class TaskService {
 
-  private apiUrl = environment.apiBaseUrl;
+  private apiUrl = `${environment.apiBaseUrl}/tasks`;
 
   constructor(private http: HttpClient) {}
 

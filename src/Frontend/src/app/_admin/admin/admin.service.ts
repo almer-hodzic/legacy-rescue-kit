@@ -21,7 +21,7 @@ export interface TaskAdminDto {
 
 @Injectable({ providedIn: 'root' })
 export class AdminService {
-  private baseUrl = environment.apiBaseUrl;
+  private baseUrl = `${environment.apiBaseUrl}/admin`;
 
   constructor(private http: HttpClient) {}
 

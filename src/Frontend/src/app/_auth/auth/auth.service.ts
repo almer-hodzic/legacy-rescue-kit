@@ -36,7 +36,7 @@ export interface UserMeDto {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseUrl = environment.apiBaseUrl;
+  private baseUrl = `${environment.apiBaseUrl}/auth`;
   private tokenKey = 'jwt_token';
   isLoggedIn$ = new BehaviorSubject<boolean>(this.hasToken());
 
