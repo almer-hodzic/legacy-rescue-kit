@@ -14,9 +14,7 @@ services:
       - key: ConnectionStrings__DefaultConnection
         fromDatabase:
           name: legacy-rescue-db
-          property: connectionString    
-      - key: FrontendUrl
-        value: https://legacy-rescue-kit.vercel.app
+          property: connectionString
 
 databases:
   - name: legacy-rescue-db
