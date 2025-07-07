@@ -126,23 +126,27 @@ static async Task SeedRolesAndAdminAsync(IServiceProvider services)
             await roleManager.CreateAsync(new IdentityRole(role));
     }
 
+    // Admin user
     var adminEmail = "admin@legacy.com";
-    var admin = await userManager.FindByEmailAsync(adminEmail);
-
-    if (admin == null)
+    if (await userManager.FindByEmailAsync(adminEmail) == null)
     {
-        var newAdmin = new User
-        {
-            UserName = "Admin",
-            Email = adminEmail,
-            EmailConfirmed = true
-        };
-
-        var result = await userManager.CreateAsync(newAdmin, "Admin123!");
+        var admin = new User { UserName = "Admin", Email = adminEmail, EmailConfirmed = true };
+        var result = await userManager.CreateAsync(admin, "Admin123!");
         if (result.Succeeded)
-            await userManager.AddToRoleAsync(newAdmin, "Admin");
+            await userManager.AddToRoleAsync(admin, "Admin");
+    }
+
+    // Regular user
+    var userEmail = "user@legacy.com";
+    if (await userManager.FindByEmailAsync(userEmail) == null)
+    {
+        var user = new User { UserName = "User", Email = userEmail, EmailConfirmed = true };
+        var result = await userManager.CreateAsync(user, "User123!");
+        if (result.Succeeded)
+            await userManager.AddToRoleAsync(user, "User");
     }
 }
+
 
 
 app.UseSwagger();
