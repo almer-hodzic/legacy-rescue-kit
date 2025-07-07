@@ -163,6 +163,7 @@ app.MapControllers();
 
 app.MapGet("/", () => Results.Ok("✅ Legacy Rescue Kit API is live!"));
 
-app.Run();
 await SeedRolesAndAdminAsync(app.Services);
+app.Run();
+
 
